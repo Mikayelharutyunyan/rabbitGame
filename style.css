@@ -1,0 +1,15 @@
+.rd{
+    display: inline-block;
+    height: 0px;
+    width: 0px;
+}
+
+.finish{
+    width: 1000000px;
+}
+
+.RButton{
+    margin-top: 10px;
+    width: 70px;
+    height: 30px;
+}
