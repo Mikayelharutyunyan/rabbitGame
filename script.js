@@ -1,3 +1,5 @@
+
+
 function createGame(){
 
 var tableHeight = prompt("Please enter the quantity of blocks on Y axis");
