@@ -187,11 +187,6 @@ function createCharachters(){
         wolfCoords[i].push(wolfRandNumberY, wolfRandNumberX);
         rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
         coords.splice(wolfRandNumber, 1);
-        // rand = document.getElementsByClassName("block" + blockRandNumberY + "" + blockRandNumberX) 
-        // blocks.push(randBlock);
-        // wallCoords[i] = [];
-        // wallCoords[i].push(blockRandNumberY, blockRandNumberX);
-        // blocks[i][0].style.backgroundColor = 'black';
     }
 }
 
@@ -200,10 +195,6 @@ createCharachters();
 function moveCharachters(){
 
     window.addEventListener("keyup", (event) => {
-        // switch(event.key){
-        //     case 'Enter': rows[playerY][playerX].appendChild(rabDiv);
-        //     case 'ArrowUp': rows[playerY][1].appendChild(rabDiv);
-        // }
         if(event.key === "ArrowUp")
         {
             if(playerY < 1) rows[playerY += tableHeight - 1][playerX].appendChild(rabDiv); 
@@ -351,20 +342,6 @@ function moveCharachters(){
                         }
                     }
                 }
-                
-                // for(let j = 0; j < wolves.length; j++){
-                //     if(wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1])
-                //     {       
-                //         wolfBeforeCollision[j] = [];
-                //         wolfBeforeCollision[j].push(wolfCoords[j][0], wolfCoords[j][1]);
-                //         console.log(wolfBeforeCollision[j][0]);
-                //         console.log(wolfBeforeCollision[j][1]);
-                //         wolfCoords[j][0] -= 1;                
-                //         rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                //         console.log(wolfCoords[j][0]);
-                //         console.log(wolfCoords[j][1]);
-                //     }
-                // }
             }
 
             coordsCheckY();
@@ -423,49 +400,6 @@ function coordsCheckX(){
             setTimeout(function(){ alert("YOU WON"); }, 30);
         }
     }
-
-
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    // for(let i = 0; i < wolves.length; i++){
-    //     for(let j = 1; j < wolves.length - count; j++){
-    //         // console.log(wolfCoords[i][0] + "  " + wolfCoords[i][1])
-    //         // console.log(wolfCoords[j][0] + "  " + wolfCoords[j][1])
-    //         console.log(wolfCoords);
-    //         if(wolfCoords[i][0] == wolfCoords[j][0] && wolfCoords[i][1] == wolfCoords[j][1]){
-    //             wolfCoords[j][0] = wolfPrevCoords[j][0]; 
-    //             wolfCoords[j][1] = wolfPrevCoords[j][1];
-    //             rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[i]);
-    //         }
-    //     }
-    //     count++;
-    // }
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    // var hashes = {};
-
-    // for (var i=0; i < wolves.length; i++) {
-    //     var hash = JSON.stringify(wolfCoords[i]); // or .toString(), or whatever
-    //     if (hash in hashes) {
-    //         // console.log(hashes)
-    //         wolfCoords[i][0] = wolfPrevCoords[i][0];
-    //         wolfCoords[i][1] = wolfPrevCoords[i][1];
-    //         console.log(wolfPrevCoords[i] + "    " + wolfCoords[i])
-    //         console.log(hash)
-    //         rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-    //     }
-    //     else{
-            
-    //         hashes[hash] = true;
-    //     }
-    //     //console.log(hashes)
-    // }
-    // console.log(uniques)
-
-    
-
 
     for(let i = 0; i < wallCoords.length; i++) {
         for(let j = 0; j < wolves.length; j++){
@@ -571,8 +505,6 @@ function coordsCheckX(){
             }
         }
     }
-
-    // console.log(wolfCoordsMatch)
 }
 
 function coordsCheckY(){
@@ -626,45 +558,6 @@ function coordsCheckY(){
             setTimeout(function(){ alert("YOU WON"); }, 30);
         }
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////
-
-    // for(let i = 0; i < wolves.length; i++){
-    //     for(let j = 1; j < wolves.length; j++){
-    //         // console.log(wolfCoords[i][0] + "  " + wolfCoords[i][1])
-    //         // console.log(wolfCoords[j][0] + "  " + wolfCoords[j][1])
-    //         if(wolfCoords[i][0] == wolfCoords[j][0] && wolfCoords[i][1] == wolfCoords[j][1]){
-    //             console.log("True")
-    //             wolfCoords[j][0] = wolfPrevCoords[j][0]; 
-    //             wolfCoords[j][1] = wolfPrevCoords[j][1];
-    //             rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[i]);
-    //         }
-    //     }
-    // }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
-    // var hashes = {};
-
-    // for (var i=0; i < wolves.length; i++) {
-    //     var hash = JSON.stringify(wolfCoords[i]); // or .toString(), or whatever
-    //     if (hash in hashes) {
-    //         // console.log(hashes)
-    //         if(wolfCoords[i][0])
-    //         wolfCoords[i][0] = wolfPrevCoords[i][0];
-    //         wolfCoords[i][1] = wolfPrevCoords[i][1];
-    //         console.log(wolfPrevCoords[i] + "    " + wolfCoords[i])
-    //         console.log(hash)
-    //         rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-    //     }
-    //     else{
-            
-    //         hashes[hash] = true;
-    //     }
-    //     //console.log(hashes)
-    // }
-
-    //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     for(let i = 0; i < wallCoords.length; i++) {
         for(let j = 0; j < wolves.length; j++){
@@ -740,24 +633,6 @@ function coordsCheckY(){
                     }
                 }
             }
-
-            // else if(wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wallCoords[i][0] == playerY)
-            // {
-            //     if(wolfCoords[j][0] >= (tableHeight - 1) / 2)
-            //     {
-            //         console.log("ASDASDaaaaaaaaaaaaaaaa")
-            //         wolfCoords[j][0] = wolfPrevCoords[j][0];
-            //         wolfCoords[j][1] = wolfPrevCoords[j][1] + 1;
-            //         rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-            //     }
-            //     else{
-            //         wolfCoords[j][0] = wolfPrevCoords[j][0];
-            //         wolfCoords[j][1] = wolfPrevCoords[j][1] - 1;
-            //         rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-            //     }
-            // }
-
-            // console.log(wallCoords[i][0] + " " + playerY)
         }
     }
 
@@ -782,7 +657,6 @@ function coordsCheckY(){
 
             else{
                 if(wolfCoordsMatch[i][0] == wolfCoordsMatch[j][0] && wolfCoordsMatch[i][1] == wolfCoordsMatch[j][1]){
-                    console.log(wolfCoordsMatch)
                     wolfCoords[j][0] = wolfPrevCoords[j][0];
                     wolfCoords[j][1] = wolfPrevCoords[j][1];
                     rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
@@ -795,26 +669,3 @@ moveCharachters();
 }
 
 createGame();
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-// var myWolves = [[6, 7], [1, 2], [6, 7], [7, 8], [1, 2], [1, 2], [7, 7], [1, 2], [1, 2], [5, 8], [1, 2]];
-// var myArrays = myWolves.slice();
-//     hashes = {};
-
-//     var count;
-// for (var i=0; i < myArrays.length; i++) {
-//     count = 0;
-//     for(var j = i; j < myArrays.length; j++){
-//         console.log(j)
-//         if(i == j){console.log()}
-//         else{
-//             if(myWolves[i] == myWolves[j]){
-//                 console.log("YES BABYYY")
-//             }
-//         }
-//     }
-// }
-
-// console.log(myArrays)
