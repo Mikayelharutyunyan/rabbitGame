@@ -1,671 +1,239 @@
-function createGame(){
+const rabbCoords = []
+const homeCoords = []
+const wolfCoords = []
+const wallCoords = []
+const allCoords = []
+const all_blocks = []
 
-var tableHeight = prompt("Please enter the quantity of blocks on Y axis");
-var tableWidth = prompt("Please enter the quantity of blocks on X axis");
-var wallsQuantity = prompt("Please enter the quantity of walls");
-var wolvesQuantity = prompt("Please enter the quantity of wolves");
-var coords = [];
-var playerCoords = [];
-var wallCoords = [];
-var wolves = [];
-var wolfCoords = [];
-var wolfCoordsMatch = [];
-var arno;
-var wolfPrevCoords = [];
-var wolfRandNumberX;
-var wolfRandNumberY;
-var playerX;
-var playerY;
-var wolfBeforeCollision = [];
-var removedBlocks = [];
-var noDubsBlocks = [];
-var finishBlock;
-var finishRandNumberX;
-var finishRandNumberY;
-var map = [];
+var tableHeight = prompt("Input the table height")
+var tableWidth = prompt("Input the table width")
+var wolvesQuantity = prompt("Input the number of wolves")
+var wallsQuantity = prompt("Input the number of walls")
 
-if(parseInt(tableHeight) > 0 && parseInt(tableWidth) > 0 && parseInt(wallsQuantity) > 0 && parseInt(wolvesQuantity)){}
-else{
-    alert("Input proper values")
-    createGame();
-}
+var wolves = []
+var rabbit = document.createElement("div")
 
-document.write(document.getElementsByTagName('body')[0]);
+var body = document.getElementsByTagName('body')[0]
 
-var body = document.getElementsByTagName('body')[0];
+document.write(body)
 
-function tableCreate() {
-    tbl = document.createElement('table');
-    tbl.style.width = '30%';
-    tbl.style.height = '30%';
-    tbl.setAttribute('border', '1');
-    tbdy = document.createElement('tbody');
-
-    var classCountX = 0;
-    var classCountY = 0;
-
-    var count = 0;
-
-    for (let i = 0; i < tableHeight; i++) {
-        classCountX = 0;
-        tr = document.createElement('tr');
-        map[i] = tr;
-        for (let j = 0; j < tableWidth; j++) {
-            td = document.createElement('td');
-            coords[count] = []
-            coords[count].push(classCountY, classCountX);
-            td.classList.add("block" + (classCountY + "" + (classCountX++)));
-            map[i][j] = td;
+function createEmptyBoard(m, n){
+    tbl = document.createElement('table')
+    tbl.style.width = '50%'
+    tbl.style.height = '50%'
+    tbl.setAttribute('border', '1')
+    tbdy = document.createElement('tbody')
+    
+    for (let i = 0; i < m; i++) {
+        tr = document.createElement('tr')
+        all_blocks[i] = tr
+        all_blocks[i].length = n
+        for (let j = 0; j < n; j++) {
+            td = document.createElement('td')
+            td.style.height = "40px"
+            td.style.width = "40px"
             tr.appendChild(td)
-            count++;
+            all_blocks[i][j] = td
+            allCoords.push([i, j])
         }
-        classCountY++;
-        tbdy.appendChild(tr);
+        tbdy.appendChild(tr)
     }
-    tbl.appendChild(tbdy);
-    body.appendChild(tbl);
-}
-tableCreate();
-
-for(let i = 0; i < tableHeight; i++){
-    for(let j = 0; j < tableWidth; j++){
-        document.getElementsByTagName("tbody")[0].rows[i][j].style.height = "40px";
-    }
+    tbl.appendChild(tbdy)
+    body.appendChild(tbl)
+    rows = document.getElementsByTagName('tbody')[0].rows
 }
 
-var rows = document.getElementsByTagName("tbody")[0].rows;
-
-function createCharachters(){
-    var count = 0;
-    var blocks = [];
-    var randBlock;
-    var blockRandNumberX;
-    var blockRandNumberY;
-    var blX;
-    var blY;
-
-    var restartButton = document.createElement("button");
-    var buttonText = document.createTextNode("Restart");
-    restartButton.appendChild(buttonText);
-    restartButton.classList.add("RButton");
-    body.appendChild(restartButton);
-    restartButton.onclick = function(){
-        location.reload();
-    }
-
-    var finishRandNumber =  Math.floor(Math.random() * coords.length);
-    finishRandNumberX = coords[finishRandNumber][1];
-    finishRandNumberY = coords[finishRandNumber][0];
-    coords.splice(finishRandNumber, 1)
-
-    finishBlock = document.getElementsByClassName("block" + finishRandNumberY + "" + finishRandNumberX);
-    finishBlock[0].style.backgroundColor = "blue";
-
-    rabDiv = document.createElement("div");
-    var rabbit = document.createTextNode("🐇");
-    rabDiv.style.marginBottom = "8px";
-    rabDiv.classList.add("rd");
-    rabDiv.appendChild(rabbit);
-
-    var playerRandNumber = Math.floor(Math.random() * coords.length);
-    playerX = coords[playerRandNumber][1];
-    playerY = coords[playerRandNumber][0];
-
-    coords.splice(playerRandNumber, 1);
-    
-    rows[playerY][playerX].appendChild(rabDiv);
-
-    for(let i = 0; i < wallsQuantity; i++){
-        var blockRandNumber = Math.floor(Math.random() * coords.length);
-        blockRandNumberX = coords[blockRandNumber][1];
-        blockRandNumberY = coords[blockRandNumber][0];
-        coords.splice(blockRandNumber, 1);
-        blX = blockRandNumberX;
-        blY = blockRandNumberY;
-
-        blockRandNumberY -= 1;
-        blockRandNumberX -= 1;
-        var arr1 = [blockRandNumberY, blockRandNumberX];
-        blockRandNumberY += 2;
-        blockRandNumberX += 2;
-        var arr2 = [blockRandNumberY, blockRandNumberX];
-        blockRandNumberY -= 2;
-        var arr3 = [blockRandNumberY, blockRandNumberX];
-        blockRandNumberY += 2;
-        blockRandNumberX -= 2;
-        var arr4 = [blockRandNumberY, blockRandNumberX];
-        removedBlocks.push(arr1, arr2, arr3, arr4)
-        for(let j = 0; j < 4; j++)
-        {
-            if(removedBlocks[count][0] < 0 || removedBlocks[count][0] > tableHeight - 1 || removedBlocks[count][1] < 0 || removedBlocks[count][1] > tableWidth - 1)
-            {
-                removedBlocks.splice(count, 1);
-                count--;
-            }
-            count++;
-        }
-        let stringArray = removedBlocks.map(JSON.stringify);
-        let uniqueStringArray = new Set(stringArray);
-        noDubsBlocks = Array.from(uniqueStringArray, JSON.parse);
-
-        for(let i = 0; i < noDubsBlocks.length; i++){
-            for(let j = 0; j < coords.length; j++){
-                if(noDubsBlocks[i][0] == coords[j][0] && noDubsBlocks[i][1] == coords[j][1])
-                {
-                    coords.splice(j, 1);
-                }
-            }
-        }
-
-        
-
-        blockRandNumberY = blY;
-        blockRandNumberX = blX;
-        randBlock = document.getElementsByClassName("block" + blockRandNumberY + "" + blockRandNumberX)
-        wallCoords[i] = [];
-        wallCoords[i].push(blockRandNumberY, blockRandNumberX);
-        randBlock[0].style.backgroundColor = 'black';
-    }
-
+function createWolves(wolvesQuantity){
     for(let i = 0; i < wolvesQuantity; i++){
-        wolfCoords[i] = []
-
-        var classNum = i + 1;
-        wolves[i] = document.createElement("div");
-        var wolfText = document.createElement("p");
-        var wolfEmoji = document.createTextNode("🐺");
-        wolfText.appendChild(wolfEmoji);
-        wolves[i].classList.add("wolf" + classNum);
-        wolves[i].appendChild(wolfText);
-        wolves[i].style.width = "0px";
-        wolves[i].style.height = "0px";
-        wolves[i].style.marginBottom = "10px";
-
-        var wolfRandNumber = Math.floor(Math.random() * coords.length);
-        wolfRandNumberX = coords[wolfRandNumber][1];
-        wolfRandNumberY = coords[wolfRandNumber][0];
-        wolfCoords[i].push(wolfRandNumberY, wolfRandNumberX);
-        rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        coords.splice(wolfRandNumber, 1);
+        var randWolves = Math.floor(Math.random() * allCoords.length)
+        var randWolvesY = allCoords[randWolves][0]
+        var randWolvesX = allCoords[randWolves][1]
+        wolfCoords.push([randWolvesY, randWolvesX])
+        allCoords.splice(randWolves, 1)
+        wolves[i] = document.createElement("div")
+        PaintCharachters(randWolvesY, randWolvesX, wolves[i], "🐺")
     }
 }
 
-createCharachters();
-
-function moveCharachters(){
-
-    window.addEventListener("keyup", (event) => {
-        if(event.key === "ArrowUp")
-        {
-            if(playerY < 1) rows[playerY += tableHeight - 1][playerX].appendChild(rabDiv); 
-            else rows[--playerY][playerX].appendChild(rabDiv);
-            for (let i = 0; i < wallCoords.length; i++) {
-                if(playerY == wallCoords[i][0] && playerX == wallCoords[i][1])
-                {
-                    if(wallCoords[i][0] == tableHeight - 1)
-                    {
-                        playerY = 0;
-                        rows[playerY][playerX].appendChild(rabDiv);    
-                    }
-                    else{
-                        rows[++playerY][playerX].appendChild(rabDiv);
-                    }
-                    for(let j = 0; j < wolves.length; j++){
-                        if(wolfCoords[j][0] < playerY){
-                            rows[--wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][0] > playerY)
-                        {
-                            rows[++wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][0] == playerY && wolfCoords[j][1] > playerX)
-                        {
-                            rows[wolfCoords[j][0]][++wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][0] == playerY && wolfCoords[j][1] < playerX)
-                        {
-                            rows[wolfCoords[j][0]][--wolfCoords[j][1]];
-                        }
-                    }
-                }
-            }
-
-            coordsCheckY();
-                       
-        }
-        else if(event.key === "ArrowLeft")
-        {
-            if(playerX < 1) rows[playerY][playerX += tableWidth - 1].appendChild(rabDiv);
-            else rows[playerY][--playerX].appendChild(rabDiv);
-            for (let i = 0; i < wallCoords.length; i++) {
-                if(playerY == wallCoords[i][0] && playerX == wallCoords[i][1])
-                {
-                    if(wallCoords[i][1] == tableWidth - 1)
-                    {
-                        playerX = 0;
-                        rows[playerY][playerX].appendChild(rabDiv);    
-                    }
-                    else{
-                        rows[playerY][++playerX].appendChild(rabDiv);
-                    }
-                    for(let j = 0; j < wolves.length; j++){
-                        if(wolfCoords[j][1] < playerX){
-                            rows[wolfCoords[j][0]][--wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][1] > playerX)
-                        {
-                            rows[wolfCoords[j][0]][++wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][1] == playerX && wolfCoords[j][0] > playerY)
-                        {
-                            rows[++wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][1] == playerX && wolfCoords[j][0] < playerY)
-                        {
-                            rows[--wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                    }
-                }
-            }
-
-            coordsCheckX();                       
-        }
-        else if(event.key === "ArrowRight")
-        {
-            if(playerX > tableWidth - 2) rows[playerY][playerX -= tableWidth - 1].appendChild(rabDiv);
-            else rows[playerY][++playerX].appendChild(rabDiv);
-            for (let i = 0; i < wallCoords.length; i++) {
-                if(playerY == wallCoords[i][0] && playerX == wallCoords[i][1])
-                {
-                    if(wallCoords[i][1] == 0)
-                    {
-                        playerX = tableWidth - 1;
-                        rows[playerY][playerX].appendChild(rabDiv);    
-                    }
-                    else{
-                        rows[playerY][--playerX].appendChild(rabDiv);
-                    }
-                    for(let j = 0; j < wolves.length; j++){
-                        if(wolfCoords[j][1] < playerX){
-                            rows[wolfCoords[j][0]][--wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][1] > playerX)
-                        {
-                            rows[wolfCoords[j][0]][++wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][1] == playerX && wolfCoords[j][0] > playerY)
-                        {
-                            rows[++wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][1] == playerX && wolfCoords[j][0] < playerY)
-                        {
-                            rows[--wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                    }
-                }
-            }
-
-            coordsCheckX();
-        }
-
-        else if(event.key === "ArrowDown")
-        {
-            if(playerY > tableHeight - 2) rows[playerY -= tableHeight - 1][playerX].appendChild(rabDiv); 
-            else rows[++playerY][playerX].appendChild(rabDiv);
-
-            for (let i = 0; i < wallCoords.length; i++) {
-                if(playerY == wallCoords[i][0] && playerX == wallCoords[i][1])
-                {
-                    if(wallCoords[i][0] == 0)
-                    {
-                        playerY = tableHeight - 1;
-                        rows[playerY][playerX].appendChild(rabDiv);    
-                    }
-                    else{
-                        rows[--playerY][playerX].appendChild(rabDiv);
-                    }
-                    for(let j = 0; j < wolves.length; j++){
-                        if(wolfCoords[j][0] < playerY){
-                            rows[--wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][0] > playerY)
-                        {
-                            rows[++wolfCoords[j][0]][wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][0] == playerY && wolfCoords[j][1] > playerX)
-                        {
-                            rows[wolfCoords[j][0]][++wolfCoords[j][1]];
-                        }
-                        else if(wolfCoords[j][0] == playerY && wolfCoords[j][1] < playerX)
-                        {
-                            rows[wolfCoords[j][0]][--wolfCoords[j][1]];
-                        }
-                    }
-                }
-            }
-
-            coordsCheckY();
-        }
-    })
+function createWalls(wallsQuantity){
+    for(let i = 0; i < wallsQuantity; i++){
+        var randWalls = Math.floor(Math.random() * allCoords.length)
+        var randWallsY = allCoords[randWalls][0]
+        var randWallsX = allCoords[randWalls][1]
+        wallCoords.push([randWallsY, randWallsX])
+        rows[randWallsY][randWallsX].style.backgroundColor = "black"
+        allCoords.splice(randWalls, 1)
+    }
 }
 
-function coordsCheckX(){
-    let count = 0;
-    let count1 = 0;
+function createRabbit(arr){
+    var randRab = Math.floor(Math.random() * allCoords.length)
+    var rabY = allCoords[randRab][0]
+    var rabX = allCoords[randRab][1]
+    arr.push(rabY, rabX)
+    PaintCharachters(rabY, rabX, rabbit, "🐇")
+    allCoords.splice(randRab, 1)
+}
 
-    for(let i = 0; i < wolves.length; i++){
-        wolfPrevCoords[i] = [];
-        wolfPrevCoords[i].push(wolfCoords[i][0], wolfCoords[i][1]);
-        if(playerX > wolfCoords[i][1]){
-            wolfCoords[i][1] += 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
+function createHome(arr){
+    var randHome = Math.floor(Math.random() * allCoords.length)
+    var homeY = allCoords[randHome][0]
+    var homeX = allCoords[randHome][1]
+    arr.push(homeY, homeX)
+    rows[homeY][homeX].style.backgroundColor = "blue"
+    allCoords.splice(randHome, 1)
+}
 
-        else if(playerX < wolfCoords[i][1]){
-            wolfCoords[i][1] -= 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
+const PaintCharachters = (y, x, element, emoji) => {
+    element.appendChild(document.createTextNode(emoji))
+    rows[y][x].appendChild(element)
+}
 
-        else if(playerY == wolfCoords[i][0] && playerX == ++wolfCoords[i][1]){
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
+const checkWrongValues = (tableHeight, tableWidth, wolvesQuantity, wallsQuantity) => {
+    if(parseInt(tableHeight) * parseInt(tableWidth) < parseInt(wolvesQuantity) + parseInt(wallsQuantity) + 2){
+        alert("The numbers you inputed do not correspond to the game values")
+        tbl.remove()
+        return
+    }
+}
 
-        else if(playerY == wolfCoords[i][0] && playerX == --wolfCoords[i][1]){
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
 
-        else if(playerX == wolfCoords[i][1] && playerY > wolfCoords[i][0]){
-            wolfCoords[i][0] += 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
+function startGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity) {
+    checkWrongValues(tableHeight, tableWidth, wolvesQuantity, wallsQuantity);
+    createEmptyBoard(tableHeight, tableWidth)
+    createWolves(wolvesQuantity)
+    createWalls(wallsQuantity)
+    createRabbit(rabbCoords)
+    createHome(homeCoords)
+}
 
-        else{
-            wolfCoords[i][0] -= 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
+startGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)
 
-        if(playerY == wolfCoords[i][0] && playerX == wolfCoords[i][1]){
-            tbl.remove();
-            alert("YOU LOST");
-            count1++;
-            break;
-        }
+
+window.addEventListener("keyup", event => moveRabbit(event.key))
+
+const moveRabbit = (key) => {
+    if(key === "ArrowUp"){
+        if(checkRabbitCollision(1, 0, -(all_blocks.length - 1), 0)){}
+        else makeRabbitMove(0, -1, 0, all_blocks.length - 1)
     }
 
-    if(playerX == finishRandNumberX && playerY == finishRandNumberY){
-        if(count1 == 1){}
-        else{
-            rows[finishRandNumberY][finishRandNumberX].appendChild(rabDiv)
-            tbl.remove();
-            setTimeout(function(){ alert("YOU WON"); }, 30);
-        }
+    else if(key === "ArrowDown"){
+        if(checkRabbitCollision(-1, 0, all_blocks.length - 1, 0)){}
+        else makeRabbitMove(0, 1, all_blocks.length - 1, 0)
     }
 
-    for(let i = 0; i < wallCoords.length; i++) {
-        for(let j = 0; j < wolves.length; j++){
-            if(tableWidth == 1 || tableHeight == 1){
-                if(wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1]){
-                    wolfCoords[j][0] = wolfPrevCoords[j][0];
-                    wolfCoords[j][1] = wolfPrevCoords[j][1];
-                    rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                }
-            }
-
-            else{
-                if((wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wolfCoords[j][0] > playerY))
-                {
-                    if((wolfPrevCoords[j][0] == wallCoords[i][0] + 1)){
-                        if(finishRandNumberX >= wolfCoords[j][1]){
-                            wolfCoords[j][1] = wolfPrevCoords[j][1] + 1;
-                            wolfCoords[j][0] = wolfPrevCoords[j][0];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-
-                        else{
-                            wolfCoords[j][1] = wolfPrevCoords[j][1] - 1;
-                            wolfCoords[j][0] = wolfPrevCoords[j][0];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-                    }
-
-                    else{
-                        wolfCoords[j][1] = wolfPrevCoords[j][1];
-                        wolfCoords[j][0] = wolfPrevCoords[j][0] - 1;
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                }
-                
-                else if((wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wolfCoords[j][0] < playerY))
-                {
-                    if(wolfPrevCoords[j][0] == wallCoords[i][0] - 1){
-                        if(finishRandNumberX >= wolfCoords[j][1]){
-                            wolfCoords[j][1] = wolfPrevCoords[j][1] + 1;
-                            wolfCoords[j][0] = wolfPrevCoords[j][0];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-
-                        else{
-                            wolfCoords[j][1] = wolfPrevCoords[j][1] - 1;
-                            wolfCoords[j][0] = wolfPrevCoords[j][0];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-                    }
-
-                    else{
-                        wolfCoords[j][1] = wolfPrevCoords[j][1];
-                        wolfCoords[j][0] = wolfPrevCoords[j][0] + 1;
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                }
-
-                else if((wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wolfCoords[j][0] == playerY))
-                {
-                    if(finishRandNumberY >= wolfCoords[j][0])
-                    {
-                        wolfCoords[j][0] = wolfPrevCoords[j][0] + 1;
-                        wolfCoords[j][1] = wolfPrevCoords[j][1];
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                    else{
-                        wolfCoords[j][0] = wolfPrevCoords[j][0] - 1;
-                        wolfCoords[j][1] = wolfPrevCoords[j][1];
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                }
-            }
-        }
+    else if(key === "ArrowRight"){
+        if(checkRabbitCollision(0, -1, 0, all_blocks[0].length - 1)){}
+        else makeRabbitMove(1, 1, all_blocks[0].length - 1, 0)
     }
 
-    wolfCoordsMatch = wolfCoords.slice() 
-
-    for (var i=0; i < wolfCoordsMatch.length; i++) {
-        count = 0;
-        for(var j = 0; j < wolfCoordsMatch.length; j++){
-            if(wolfCoordsMatch[i][0] != wolfCoordsMatch[j][0] || wolfCoordsMatch[i][1] != wolfCoordsMatch[j][1]){
-                count++;
-            }
-    
-            if(count == wolfCoordsMatch.length - 1){
-                wolfCoordsMatch.splice(i, 1)
-            }
-        }
+    else if(key === "ArrowLeft"){
+        if(checkRabbitCollision(0, 1, 0, -(all_blocks[0].length - 1))){}
+        else makeRabbitMove(1, -1, 0, all_blocks[0].length - 1)
     }
-    
-    for(let i = 0; i < wolfCoordsMatch.length; i++){
-        for(let j = 0; j < wolfCoordsMatch.length; j++){
-            if(j == i){}
-            
-            else{
-                if(wolfCoordsMatch[i][0] == wolfCoordsMatch[j][0] && wolfCoordsMatch[i][1] == wolfCoordsMatch[j][1]){
-                        wolfCoords[j][0] = wolfPrevCoords[j][0];
-                        wolfCoords[j][1] = wolfPrevCoords[j][1];
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                
+
+
+}
+
+const makeRabbitMove = (rabbitCoordIndex, direction, tableEdge, value) => {
+    if(rabbCoords[rabbitCoordIndex] == tableEdge) rabbCoords[rabbitCoordIndex] = value
+    else rabbCoords[rabbitCoordIndex] += direction
+    rows[rabbCoords[0]][rabbCoords[1]].appendChild(rabbit)
+    isWon()
+    moveWolf()
+}
+
+const checkRabbitCollision = (coordY, coordX, edgeY, edgeX) => {
+    for(let i = 0; i < wallCoords.length; i++){
+        if((rabbCoords[0] == wallCoords[i][0] + coordY && rabbCoords[1] == wallCoords[i][1] + coordX) ||  
+        (rabbCoords[0] == wallCoords[i][0] + edgeY && rabbCoords[1] == wallCoords[i][1] + edgeX)) return true
+    }
+
+    return false
+}
+
+const isWon = () => {
+    if(rabbCoords[0] == homeCoords[0] && rabbCoords[1] == homeCoords[1]){ 
+        tbl.remove()
+        setTimeout(() => alert("YOU WON"), 1)
+    }
+}
+
+const isLost = () => {
+    wolfCoords.forEach(coords => {
+        if((rabbCoords[0] == coords[0] && rabbCoords[1] == coords[1])){ 
+            tbl.remove()
+            setTimeout(() => alert("YOU LOST"), 1)
+        }
+    });
+}
+
+const CalculateDistnace = (wCoords, index) => {
+    var distance = []
+
+    for(let i = 0; i < wCoords.length; i++){
+        distance.push(Math.sqrt(Math.pow(wCoords[i][0] - rabbCoords[0], 2) + Math.pow(wCoords[i][1] - rabbCoords[1], 2)))
+    }
+
+    var wolfMinDistanceIndex = distance.indexOf(Math.min(...distance))
+
+    wolfCoords[index][0] = wCoords[wolfMinDistanceIndex][0]
+    wolfCoords[index][1] = wCoords[wolfMinDistanceIndex][1] 
+
+    rows[wolfCoords[index][0]][wolfCoords[index][1]].appendChild(wolves[index])
+}
+
+const checkWolfCollision = (wCoords, num) => {
+    for(let j = 0; j < num; j++){
+        for(let k = 0; k < wCoords.length; k++){
+            if(num != wolfCoords.length) {
+                if(wCoords[k][0] == wolfCoords[j][0] && wCoords[k][1] == wolfCoords[j][1]){
+                    wCoords.splice(k, 1)
                 }
             }
+            else break
         }
     }
 }
 
-function coordsCheckY(){
-    let count = 0;
-    let count1 = 0;
+const moveWolf = () => {
+    isLost();
+    filterLegalMovesOnly();
+    isLost();
+}
+
+const getWolfAllMoves = (coords) => {
+    return [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
+}
+
+const filterLegalMovesOnly = () => {
+    var allPossibleCoords = []
+    var legalCoords
+    var num = 0
+
+    for(let i = 0; i < wolfCoords.length; i++){
+        allPossibleCoords.push(getWolfAllMoves(wolfCoords[i]))
     
-    for(let i = 0; i < wolves.length; i++){
-        wolfPrevCoords[i] = [];
-        wolfPrevCoords[i].push(wolfCoords[i][0], wolfCoords[i][1]);
-        if(playerY > wolfCoords[i][0]){
-            wolfCoords[i][0] += 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
-
-        else if(playerY < wolfCoords[i][0]){
-            wolfCoords[i][0] -= 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
-
-        else if(playerX == wolfCoords[i][1] && playerY == ++wolfCoords[i][0]){
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
-
-        else if(playerX == wolfCoords[i][1] && playerY == --wolfCoords[i][0]){
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
-
-        else if(playerY == wolfCoords[i][0] && playerX > wolfCoords[i][1]){
-            wolfCoords[i][1] += 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
-
-        else{
-            wolfCoords[i][1] -= 1;
-            rows[wolfCoords[i][0]][wolfCoords[i][1]].appendChild(wolves[i]);
-        }
-
-        if(playerY == wolfCoords[i][0] && playerX == wolfCoords[i][1]){
-            tbl.remove();
-            alert("YOU LOST");
-            count1++;
-            break;
-        }
-    }
-
-    if(playerX == finishRandNumberX && playerY == finishRandNumberY){
-        if(count1 == 1){}
-        else{
-            rows[finishRandNumberY][finishRandNumberX].appendChild(rabDiv)
-            tbl.remove();
-            setTimeout(function(){ alert("YOU WON"); }, 30);
-        }
-    }
-
-    for(let i = 0; i < wallCoords.length; i++) {
-        for(let j = 0; j < wolves.length; j++){
-            if(tableWidth == 1 || tableHeight == 1){
-                if(wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1]){
-                    wolfCoords[j][0] = wolfPrevCoords[j][0];
-                    wolfCoords[j][1] = wolfPrevCoords[j][1]
-                    rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                }
-            }
-
-            else{
-                if((wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wolfCoords[j][1] > playerX))
-                {
-                    if(((wolfPrevCoords[j][1] == wallCoords[i][1] + 1))){
-                        
-                        if(finishRandNumberY >= wolfCoords[j][0]){
-                            wolfCoords[j][0] = wolfPrevCoords[j][0] + 1;
-                            wolfCoords[j][1] = wolfPrevCoords[j][1];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-
-                        else{
-                            wolfCoords[j][0] = wolfPrevCoords[j][0] - 1;
-                            wolfCoords[j][1] = wolfPrevCoords[j][1];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-                    
-                    }
-
-                    else{
-                        wolfCoords[j][0] = wolfPrevCoords[j][0];
-                        wolfCoords[j][1] = wolfPrevCoords[j][1] - 1;
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                }
-                
-                else if((wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wolfCoords[j][1] < playerX))
-                {
-                    if(((wolfPrevCoords[j][1] == wallCoords[i][1] - 1))){
-                        if(finishRandNumberY >= wolfCoords[j][0]){
-                            wolfCoords[j][0] = wolfPrevCoords[j][0] + 1;
-                            wolfCoords[j][1] = wolfPrevCoords[j][1];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-
-                        else{
-                            wolfCoords[j][0] = wolfPrevCoords[j][0] - 1;
-                            wolfCoords[j][1] = wolfPrevCoords[j][1];
-                            rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                        }
-                    }
-
-                    else{
-                        wolfCoords[j][0] = wolfPrevCoords[j][0];
-                        wolfCoords[j][1] = wolfPrevCoords[j][1] + 1;
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                }
-
-                else if((wolfCoords[j][0] == wallCoords[i][0] && wolfCoords[j][1] == wallCoords[i][1] && wolfCoords[j][1] == playerX))
-                {
-                    if(finishRandNumberX >= wolfCoords[j][1])
-                    {
-                        wolfCoords[j][0] = wolfPrevCoords[j][0];
-                        wolfCoords[j][1] = wolfPrevCoords[j][1] + 1;
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
-                    else{
-                        wolfCoords[j][0] = wolfPrevCoords[j][0];
-                        wolfCoords[j][1] = wolfPrevCoords[j][1] - 1;
-                        rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                    }
+        for(let k = 0; k < allPossibleCoords[i].length; k++){
+            for(let j = 0; j < wallCoords.length; j++){
+                if((allPossibleCoords[i][k][0] == wallCoords[j][0] && allPossibleCoords[i][k][1] == wallCoords[j][1]) || 
+                allPossibleCoords[i][k][0] < 0 || allPossibleCoords[i][k][0] > all_blocks.length - 1 || allPossibleCoords[i][k][1] < 0 || allPossibleCoords[i][k][1] > all_blocks[0].length - 1){
+                    allPossibleCoords[i].splice(k, 1)
+                    k -= 1
+                    break
                 }
             }
         }
-    }
 
-    wolfCoordsMatch = wolfCoords.slice()
+        checkWolfCollision(allPossibleCoords[i], num)
 
-    for (var i=0; i < wolfCoordsMatch.length; i++) {
-        count = 0;
-        for(var j = 0; j < wolfCoordsMatch.length; j++){
-            if(wolfCoordsMatch[i][0] != wolfCoordsMatch[j][0] || wolfCoordsMatch[i][1] != wolfCoordsMatch[j][1]){
-                count++;
-            }
-    
-            if(count == wolfCoordsMatch.length - 1){
-                wolfCoordsMatch.splice(i, 1)
-            }
-        }
-    }
-    
-    for(let i = 0; i < wolfCoordsMatch.length; i++){
-        for(let j = 0; j < wolfCoordsMatch.length; j++){
-            if(j == i){}
+        num++
 
-            else{
-                if(wolfCoordsMatch[i][0] == wolfCoordsMatch[j][0] && wolfCoordsMatch[i][1] == wolfCoordsMatch[j][1]){
-                    wolfCoords[j][0] = wolfPrevCoords[j][0];
-                    wolfCoords[j][1] = wolfPrevCoords[j][1];
-                    rows[wolfCoords[j][0]][wolfCoords[j][1]].appendChild(wolves[j]);
-                }
-            }
+        legalCoords = allPossibleCoords[i]
+
+        if(legalCoords.length != 0){
+            CalculateDistnace(legalCoords, i)
         }
     }
 }
-moveCharachters();
-}
-
-createGame();
