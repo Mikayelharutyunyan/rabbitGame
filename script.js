@@ -122,6 +122,12 @@ const makeRabbitMove = (index, direction, tableEdge, value) => {
     if(!isWon()) moveWolf()
 }
 
+const moveWolf = () => {
+    isLost();
+    filterLegalMovesOnly();
+    isLost();
+}
+
 const checkRabbitCollision = (coordY, coordX, edgeY, edgeX) => {
     const result = wallCoords.find(elem => (rabbCoords[0] == elem[0] + coordY && rabbCoords[1] == elem[1] + coordX) ||  
         (rabbCoords[0] == elem[0] + edgeY && rabbCoords[1] == elem[1] + edgeX)) 
@@ -181,8 +187,14 @@ const checkWolfCollision = (wCoords, num) => {
     }
 }
 
+<<<<<<< HEAD
 
 const getWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
+=======
+const getWolfAllMoves = (coords) => {
+    return [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
+}
+>>>>>>> origin
 
 const filterLegalMovesOnly = () => {
     let allPossibleCoords
