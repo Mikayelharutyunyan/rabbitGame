@@ -86,8 +86,6 @@ function StartGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity) {
 }
 
 StartGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)
-// startGame(10, 10, 20, 20)
-
 
 window.addEventListener("keyup", event => MoveRabbit(event.key))
 
@@ -111,8 +109,6 @@ const MoveRabbit = (key) => {
         if(CheckRabbitCollision(0, 1, 0, -(rows[0].length - 1))){}
         else MakeRabbitMove(1, -1, 0, rows[0].length - 1)
     }
-
-
 }
 
 const MakeRabbitMove = (index, direction, tableEdge, value) => {
@@ -178,7 +174,6 @@ const CheckWolfCollision = (wCoords, num) => {
     }
 }
 
-<<<<<<< HEAD
 const CheckWolfAndWallColl = (arr, index) => {
     arr.filter((next, k) => {
         let hit = wallCoords.find(wall => (next[0] == wall[0] && next[1] == wall[1]) || 
@@ -191,9 +186,6 @@ const CheckWolfAndWallColl = (arr, index) => {
         }
     })
 }
-=======
-const getWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
->>>>>>> fb3644981fdcddba49623e6d84b62d05f4d2c255
 
 const GetWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
 
