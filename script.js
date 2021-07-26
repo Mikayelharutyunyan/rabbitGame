@@ -187,14 +187,7 @@ const checkWolfCollision = (wCoords, num) => {
     }
 }
 
-<<<<<<< HEAD
-
 const getWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
-=======
-const getWolfAllMoves = (coords) => {
-    return [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
-}
->>>>>>> origin
 
 const filterLegalMovesOnly = () => {
     let allPossibleCoords
