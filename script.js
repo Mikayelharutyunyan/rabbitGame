@@ -4,17 +4,17 @@ const wolfCoords = []
 const wallCoords = []
 const rows = []
 
-// const tableHeight = prompt("Input the table height")
-// const tableWidth = prompt("Input the table width")
-// const wolvesQuantity = prompt("Input the number of wolves")
-// const wallsQuantity = prompt("Input the number of walls")
+const tableHeight = prompt("Input the table height")
+const tableWidth = prompt("Input the table width")
+const wolvesQuantity = prompt("Input the number of wolves")
+const wallsQuantity = prompt("Input the number of walls")
 
 let wolves = [], walls = []
 let rabbit = document.createElement("img"), finish = document.createElement("img")
 
 const body = document.getElementsByTagName('body')[0]
 
-function createEmptyBoard(m, n){
+function CreateEmptyBoard(m, n){
     tbl = document.createElement('table')
     tbl.setAttribute('border', '1')
     tbdy = document.createElement('tbody')
@@ -36,28 +36,28 @@ function createEmptyBoard(m, n){
     body.appendChild(tbl)
 }
 
-const AddEachCharechter = (charY, charX, image, name, eachArr, tableHeight, tableWidth) => {
-    charY = Math.floor(Math.random() * tableHeight)
-    charX  = Math.floor(Math.random() * tableWidth)
+const AddEachCharechter = (charY, charX, image, name, eachArr, y, x) => {
+    charY = Math.floor(Math.random() * y)
+    charX  = Math.floor(Math.random() * x)
     if(rows[charY][charX].childNodes.length == 1) 
-        return AddEachCharechter(charY, charX, image, name, eachArr, tableHeight, tableWidth)
+        return AddEachCharechter(charY, charX, image, name, eachArr, y, x)
     
     eachArr.push(charY, charX)
     PaintCharachters(charY, charX, image, name)
 }
 
-function createCharechters(num, image, arr, name, tableHeight, tableWidth){
+function CreateCharechters(num, image, arr, name, y, x){
     let charX, charY
 
     if(num > 1){
         for(let i = 0; i < num; i++){
             arr[i] = []
             image[i] = document.createElement("img")
-            AddEachCharechter(charY, charX, image[i], name, arr[i], tableHeight, tableWidth)
+            AddEachCharechter(charY, charX, image[i], name, arr[i], y, x)
         }
         return
     }
-    else if(num == 1) AddEachCharechter(charY, charX, image, name, arr, tableHeight, tableWidth)
+    else if(num == 1) AddEachCharechter(charY, charX, image, name, arr, y, x)
 }
 
 const PaintCharachters = (y, x, image, name) => {
@@ -68,79 +68,73 @@ const PaintCharachters = (y, x, image, name) => {
     rows[y][x].appendChild(image)
 }
 
-const checkWrongValues = (tableHeight, tableWidth, wolvesQuantity, wallsQuantity) => {
+const CheckWrongValues = (tableHeight, tableWidth, wolvesQuantity, wallsQuantity) => {
     if(parseInt(tableHeight) * parseInt(tableWidth) < parseInt(wolvesQuantity) + parseInt(wallsQuantity) + 2){
         alert("The numbers you inputed do not correspond to the game values")
         tbl.remove()
-        return
+        return 
     }
 }
 
-function startGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity) {
-    checkWrongValues(tableHeight, tableWidth, wolvesQuantity, wallsQuantity);
-    createEmptyBoard(tableHeight, tableWidth)
-    createCharechters(1, rabbit, rabbCoords, "rabbit", tableHeight, tableWidth)
-    createCharechters(1, finish, homeCoords, "finish", tableHeight, tableWidth)
-    createCharechters(wallsQuantity, walls, wallCoords, "wall", tableHeight, tableWidth)
-    createCharechters(wolvesQuantity, wolves, wolfCoords, "wolf", tableHeight, tableWidth)
+function StartGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity) {
+    if(CheckWrongValues(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)) return
+    CreateEmptyBoard(tableHeight, tableWidth)
+    CreateCharechters(1, rabbit, rabbCoords, "rabbit", tableHeight, tableWidth)
+    CreateCharechters(1, finish, homeCoords, "finish", tableHeight, tableWidth)
+    CreateCharechters(wallsQuantity, walls, wallCoords, "wall", tableHeight, tableWidth)
+    CreateCharechters(wolvesQuantity, wolves, wolfCoords, "wolf", tableHeight, tableWidth)
 }
 
-// startGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)
-startGame(10, 10, 15, 10)
+StartGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)
+// startGame(10, 10, 20, 20)
 
 
-window.addEventListener("keyup", event => moveRabbit(event.key))
+window.addEventListener("keyup", event => MoveRabbit(event.key))
 
-const moveRabbit = (key) => {
+const MoveRabbit = (key) => {
     if(key === "ArrowUp"){
-        if(checkRabbitCollision(1, 0, -(rows.length - 1), 0)){}
-        else makeRabbitMove(0, -1, 0, rows.length - 1)
+        if(CheckRabbitCollision(1, 0, -(rows.length - 1), 0)){}
+        else MakeRabbitMove(0, -1, 0, rows.length - 1)
     }
 
     else if(key === "ArrowDown"){
-        if(checkRabbitCollision(-1, 0, rows.length - 1, 0)){}
-        else makeRabbitMove(0, 1, rows.length - 1, 0)
+        if(CheckRabbitCollision(-1, 0, rows.length - 1, 0)){}
+        else MakeRabbitMove(0, 1, rows.length - 1, 0)
     }
 
     else if(key === "ArrowRight"){
-        if(checkRabbitCollision(0, -1, 0, rows[0].length - 1)){}
-        else makeRabbitMove(1, 1, rows[0].length - 1, 0)
+        if(CheckRabbitCollision(0, -1, 0, rows[0].length - 1)){}
+        else MakeRabbitMove(1, 1, rows[0].length - 1, 0)
     }
 
     else if(key === "ArrowLeft"){
-        if(checkRabbitCollision(0, 1, 0, -(rows[0].length - 1))){}
-        else makeRabbitMove(1, -1, 0, rows[0].length - 1)
+        if(CheckRabbitCollision(0, 1, 0, -(rows[0].length - 1))){}
+        else MakeRabbitMove(1, -1, 0, rows[0].length - 1)
     }
 
 
 }
 
-const makeRabbitMove = (index, direction, tableEdge, value) => {
+const MakeRabbitMove = (index, direction, tableEdge, value) => {
     if(rabbCoords[index] == tableEdge) rabbCoords[index] = value
     else rabbCoords[index] += direction
     rows[rabbCoords[0]][rabbCoords[1]].appendChild(rabbit)
-    if(!isWon()) moveWolf()
+    if(!IsWon()) MoveWolf()
 }
 
-const moveWolf = () => {
-    isLost();
-    filterLegalMovesOnly();
-    isLost();
-}
-
-const checkRabbitCollision = (coordY, coordX, edgeY, edgeX) => {
+const CheckRabbitCollision = (coordY, coordX, edgeY, edgeX) => {
     const result = wallCoords.find(elem => (rabbCoords[0] == elem[0] + coordY && rabbCoords[1] == elem[1] + coordX) ||  
         (rabbCoords[0] == elem[0] + edgeY && rabbCoords[1] == elem[1] + edgeX)) 
     if(result) return true
 }
 
-const moveWolf = () => {
-    if(isLost()) return
-    filterLegalMovesOnly()
-    isLost()
+const MoveWolf = () => {
+    if(IsLost()) return
+    FilterLegalMovesOnly()
+    IsLost()
 }
 
-const isWon = () => {
+const IsWon = () => {
     if(rabbCoords[0] == homeCoords[0] && rabbCoords[1] == homeCoords[1]){ 
         tbl.remove()
         setTimeout(() => alert("YOU WON"), 1)
@@ -148,7 +142,7 @@ const isWon = () => {
     }
 }
 
-const isLost = () => {
+const IsLost = () => {
     const result = wolfCoords.find(coords => (rabbCoords[0] == coords[0] && rabbCoords[1] == coords[1]))
     if(result){ 
         tbl.remove()
@@ -166,9 +160,6 @@ const CalculateDistance = (wCoords, index) => {
     // const wolfMinDistanceIndex = distance.reduce((lowest, next, index) => {
     //     return next < distance[lowest] ? index : lowest }, 0)
     let wolfMinDistanceIndex = 0
-    // for(let i = 1; i < distance.length; i++){
-    //     if(distance[i] < distance[wolfMinDistanceIndex]) wolfMinDistanceIndex = i
-    // }
 
     distance.forEach((elem, i) => { if(elem < distance[wolfMinDistanceIndex]) wolfMinDistanceIndex = i })
 
@@ -178,7 +169,7 @@ const CalculateDistance = (wCoords, index) => {
     rows[wolfCoords[index][0]][wolfCoords[index][1]].appendChild(wolves[index])
 }
 
-const checkWolfCollision = (wCoords, num) => {
+const CheckWolfCollision = (wCoords, num) => {
     for(let j = 0; j < num; j++){
         if(num != wolfCoords.length) {
             wCoords.forEach((elem, i) => { if(elem[0] == wolfCoords[j][0] && elem[1] == wolfCoords[j][1]) wCoords.splice(i, 1) })
@@ -187,35 +178,32 @@ const checkWolfCollision = (wCoords, num) => {
     }
 }
 
-<<<<<<< HEAD
+const CheckWolfAndWallColl = (arr, index) => {
+    arr.filter((next, k) => {
+        let hit = wallCoords.find(wall => (next[0] == wall[0] && next[1] == wall[1]) || 
+            (next[0] < 0 || next[0] > rows.length - 1 || next[1] < 0 || next[1] > rows[0].length - 1))
 
-const getWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
-=======
-const getWolfAllMoves = (coords) => {
-    return [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
+        if(hit){
+            arr.splice(k, 1)
+            k -= index
+            CheckWolfAndWallColl(arr, index)
+        }
+    })
 }
->>>>>>> origin
 
-const filterLegalMovesOnly = () => {
+const GetWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
+
+const FilterLegalMovesOnly = () => {
     let allPossibleCoords
     let legalCoords
     let num = 0
 
-    for(let i = 0; i < wolfCoords.length; i++){
-        allPossibleCoords = getWolfAllMoves(wolfCoords[i])
+    wolfCoords.forEach((wolf, i) => {
+        allPossibleCoords = GetWolfAllMoves(wolf)
     
-        for(let k = 0; k < allPossibleCoords.length; k++){
-            for(let j = 0; j < wallCoords.length; j++){
-                if((allPossibleCoords[k][0] == wallCoords[j][0] && allPossibleCoords[k][1] == wallCoords[j][1]) || 
-                allPossibleCoords[k][0] < 0 || allPossibleCoords[k][0] > rows.length - 1 || allPossibleCoords[k][1] < 0 || allPossibleCoords[k][1] > rows[0].length - 1){
-                    allPossibleCoords.splice(k, 1)
-                    k -= 1
-                    break
-                }
-            }
-        }
+        CheckWolfAndWallColl(allPossibleCoords, 1)
 
-        checkWolfCollision(allPossibleCoords, num)
+        CheckWolfCollision(allPossibleCoords, num)
         
         num++
         
@@ -224,5 +212,5 @@ const filterLegalMovesOnly = () => {
         if(legalCoords.length != 0){
             CalculateDistance(legalCoords, i)
         }
-    }
+    })
 }
