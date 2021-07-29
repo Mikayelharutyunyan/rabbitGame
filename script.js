@@ -188,10 +188,17 @@ const WolvesCollision = (allPossibleCoords, i) => {
     return allPossibleCoords
 }
 
+<<<<<<< HEAD
 const WolfAndWallColl = (allPossibleCoords) => {
     allPossibleCoords = allPossibleCoords.filter(next => 
         wallCoords.find(wall => next[0] == wall[0] && next[1] == wall[1] || 
             next[0] < 0 || next[0] > rows.length - 1 || next[1] < 0 || next[1] > rows[0].length - 1) === undefined)
+=======
+const CheckWolfAndWallColl = (arr, index) => {
+    arr.filter((next, k) => {
+        let hit = wallCoords.find(wall => (next[0] == wall[0] && next[1] == wall[1]) || 
+            (next[0] < 0 || next[0] > rows.length - 1 || next[1] < 0 || next[1] > rows[0].length - 1))
+>>>>>>> 7243f6eb024e763d500de89de37d2f01fd621ba0
 
     return allPossibleCoords
 }
@@ -208,8 +215,16 @@ const GetLegalMoves = (allPossibleCoords, i) => {
 const MoveWolf = (wolf, i) => {
     let legalCoords = GetLegalMoves(GetWolfAllMoves(wolf), i)
 
+<<<<<<< HEAD
     if(legalCoords.length != 0){
         let shortest = GetShortestDistance(legalCoords, i)
         rows[shortest[0]][shortest[1]].appendChild(wolves[i])
     }
 }
+=======
+        if(legalCoords.length != 0){
+            CalculateDistance(legalCoords, i)
+        }
+    })
+}
+>>>>>>> 7243f6eb024e763d500de89de37d2f01fd621ba0
