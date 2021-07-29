@@ -36,28 +36,28 @@ function CreateEmptyBoard(m, n){
     body.appendChild(tbl)
 }
 
-const AddEachCharechter = (charY, charX, image, name, eachArr, y, x) => {
-    charY = Math.floor(Math.random() * y)
-    charX  = Math.floor(Math.random() * x)
-    if(rows[charY][charX].childNodes.length == 1) 
-        return AddEachCharechter(charY, charX, image, name, eachArr, y, x)
-    
-    eachArr.push(charY, charX)
+const AddEachCharechter = (image, name, arr) => {
+    let charY = Math.floor(Math.random() * tableHeight)
+    let charX = Math.floor(Math.random() * tableWidth)
+    if(rows[charY][charX].childNodes.length === 1) {
+        return AddEachCharechter(image, name, arr)
+    }
+    arr.push(charY, charX)
     PaintCharachters(charY, charX, image, name)
 }
 
-function CreateCharechters(num, image, arr, name, y, x){
-    let charX, charY
-
-    if(num > 1){
+function CreateCharechters(num, image, name, arr){
+    if(num >= 1 && image.length !== undefined){
         for(let i = 0; i < num; i++){
             arr[i] = []
             image[i] = document.createElement("img")
-            AddEachCharechter(charY, charX, image[i], name, arr[i], y, x)
+            AddEachCharechter(image[i], name, arr[i])
         }
         return
     }
-    else if(num == 1) AddEachCharechter(charY, charX, image, name, arr, y, x)
+    else if(num == 1) {
+        AddEachCharechter(image, name, arr)
+    }
 }
 
 const PaintCharachters = (y, x, image, name) => {
@@ -72,22 +72,20 @@ const CheckWrongValues = (tableHeight, tableWidth, wolvesQuantity, wallsQuantity
     if(parseInt(tableHeight) * parseInt(tableWidth) < parseInt(wolvesQuantity) + parseInt(wallsQuantity) + 2){
         alert("The numbers you inputed do not correspond to the game values")
         tbl.remove()
-        return 
+        return
     }
 }
 
 function StartGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity) {
     if(CheckWrongValues(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)) return
     CreateEmptyBoard(tableHeight, tableWidth)
-    CreateCharechters(1, rabbit, rabbCoords, "rabbit", tableHeight, tableWidth)
-    CreateCharechters(1, finish, homeCoords, "finish", tableHeight, tableWidth)
-    CreateCharechters(wallsQuantity, walls, wallCoords, "wall", tableHeight, tableWidth)
-    CreateCharechters(wolvesQuantity, wolves, wolfCoords, "wolf", tableHeight, tableWidth)
+    CreateCharechters(1, rabbit, "rabbit", rabbCoords)
+    CreateCharechters(1, finish, "finish", homeCoords)
+    CreateCharechters(wallsQuantity, walls, "wall", wallCoords)
+    CreateCharechters(wolvesQuantity, wolves, "wolf", wolfCoords)
 }
 
 StartGame(tableHeight, tableWidth, wolvesQuantity, wallsQuantity)
-// startGame(10, 10, 20, 20)
-
 
 window.addEventListener("keyup", event => MoveRabbit(event.key))
 
@@ -111,27 +109,36 @@ const MoveRabbit = (key) => {
         if(CheckRabbitCollision(0, 1, 0, -(rows[0].length - 1))){}
         else MakeRabbitMove(1, -1, 0, rows[0].length - 1)
     }
-
-
 }
 
 const MakeRabbitMove = (index, direction, tableEdge, value) => {
-    if(rabbCoords[index] == tableEdge) rabbCoords[index] = value
-    else rabbCoords[index] += direction
+    if(rabbCoords[index] == tableEdge){
+        rabbCoords[index] = value
+    } else{
+        rabbCoords[index] += direction
+    }
+
     rows[rabbCoords[0]][rabbCoords[1]].appendChild(rabbit)
-    if(!IsWon()) MoveWolf()
+
+    if(!IsWon()){
+        MoveWolves()
+    }
 }
 
 const CheckRabbitCollision = (coordY, coordX, edgeY, edgeX) => {
     const result = wallCoords.find(elem => (rabbCoords[0] == elem[0] + coordY && rabbCoords[1] == elem[1] + coordX) ||  
         (rabbCoords[0] == elem[0] + edgeY && rabbCoords[1] == elem[1] + edgeX)) 
-    if(result) return true
+    if(result){
+        return true
+    }
 }
 
-const MoveWolf = () => {
-    if(IsLost()) return
-    FilterLegalMovesOnly()
-    IsLost()
+const MoveWolves = () => {
+    for(let i = 0; i < wolfCoords.length; i++){
+        if(IsLost(wolfCoords[i])) return 
+        MoveWolf(wolfCoords[i], i)
+        if(IsLost(wolfCoords[i])) return 
+    }
 }
 
 const IsWon = () => {
@@ -142,79 +149,67 @@ const IsWon = () => {
     }
 }
 
-const IsLost = () => {
-    const result = wolfCoords.find(coords => (rabbCoords[0] == coords[0] && rabbCoords[1] == coords[1]))
-    if(result){ 
+const IsLost = (wolf, legalCoords) => {
+    const currentCoordCheck = rabbCoords[0] == wolf[0] && rabbCoords[1] == wolf[1]
+    // const nextCoordCheck = rabbCoords[0] == legalCoords[i][0] && rabbCoords[1] == legalCoords[i][1]
+    if(currentCoordCheck){ 
         tbl.remove()
         setTimeout(() => alert("YOU LOST"), 1)
         return true
     }
 }
 
-const CalculateDistance = (wCoords, index) => {
+const GetShortestDistance = (wCoords, index) => {
     const distance = []
 
     wCoords.map(item => distance.push(Math.sqrt(Math.pow(item[0] - rabbCoords[0], 2) + Math.pow(item[1] - rabbCoords[1], 2))))
 
-    // let wolfMinDistanceIndex = distance.indexOf(Math.min(...distance))
-    // const wolfMinDistanceIndex = distance.reduce((lowest, next, index) => {
-    //     return next < distance[lowest] ? index : lowest }, 0)
     let wolfMinDistanceIndex = 0
 
-    distance.forEach((elem, i) => { if(elem < distance[wolfMinDistanceIndex]) wolfMinDistanceIndex = i })
+    distance.forEach((elem, i) => {
+        if(elem < distance[wolfMinDistanceIndex]) {
+            wolfMinDistanceIndex = i 
+        }
+    })
 
-    wolfCoords[index][0] = wCoords[wolfMinDistanceIndex][0]
-    wolfCoords[index][1] = wCoords[wolfMinDistanceIndex][1] 
+    wolfCoords[index] = wCoords[wolfMinDistanceIndex]
 
-    rows[wolfCoords[index][0]][wolfCoords[index][1]].appendChild(wolves[index])
+    return wolfCoords[index]
 }
 
-const CheckWolfCollision = (wCoords, num) => {
-    for(let j = 0; j < num; j++){
-        if(num != wolfCoords.length) {
-            wCoords.forEach((elem, i) => { if(elem[0] == wolfCoords[j][0] && elem[1] == wolfCoords[j][1]) wCoords.splice(i, 1) })
+const WolvesCollision = (allPossibleCoords, i) => {
+    for(let j = 0; j < i; j++){
+        if(i != wolfCoords.length) {
+            allPossibleCoords = allPossibleCoords.filter(elem => !(elem[0] == wolfCoords[j][0] && elem[1] == wolfCoords[j][1]))
         }
         else break
     }
+
+    return allPossibleCoords
 }
 
-<<<<<<< HEAD
-const CheckWolfAndWallColl = (arr, index) => {
-    arr.filter((next, k) => {
-        let hit = wallCoords.find(wall => (next[0] == wall[0] && next[1] == wall[1]) || 
-            (next[0] < 0 || next[0] > rows.length - 1 || next[1] < 0 || next[1] > rows[0].length - 1))
+const WolfAndWallColl = (allPossibleCoords) => {
+    allPossibleCoords = allPossibleCoords.filter(next => 
+        wallCoords.find(wall => next[0] == wall[0] && next[1] == wall[1] || 
+            next[0] < 0 || next[0] > rows.length - 1 || next[1] < 0 || next[1] > rows[0].length - 1) === undefined)
 
-        if(hit){
-            arr.splice(k, 1)
-            k -= index
-            CheckWolfAndWallColl(arr, index)
-        }
-    })
+    return allPossibleCoords
 }
-=======
-const getWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
->>>>>>> fb3644981fdcddba49623e6d84b62d05f4d2c255
 
 const GetWolfAllMoves = coords => [[coords[0] + 1, coords[1]], [coords[0] - 1, coords[1]], [coords[0], coords[1] + 1], [coords[0], coords[1] - 1]]
 
-const FilterLegalMovesOnly = () => {
-    let allPossibleCoords
-    let legalCoords
-    let num = 0
+const GetLegalMoves = (allPossibleCoords, i) => {
+    allPossibleCoords = WolfAndWallColl(allPossibleCoords)
+    allPossibleCoords = WolvesCollision(allPossibleCoords, i)
 
-    wolfCoords.forEach((wolf, i) => {
-        allPossibleCoords = GetWolfAllMoves(wolf)
-    
-        CheckWolfAndWallColl(allPossibleCoords, 1)
+    return allPossibleCoords
+}
 
-        CheckWolfCollision(allPossibleCoords, num)
-        
-        num++
-        
-        legalCoords = allPossibleCoords
+const MoveWolf = (wolf, i) => {
+    let legalCoords = GetLegalMoves(GetWolfAllMoves(wolf), i)
 
-        if(legalCoords.length != 0){
-            CalculateDistance(legalCoords, i)
-        }
-    })
+    if(legalCoords.length != 0){
+        let shortest = GetShortestDistance(legalCoords, i)
+        rows[shortest[0]][shortest[1]].appendChild(wolves[i])
+    }
 }
